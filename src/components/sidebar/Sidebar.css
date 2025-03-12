@@ -1,0 +1,143 @@
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    border-right: 1px solid #a1a1a1;
+    color: rgb(0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+    position: fixed;
+    align-items: center;
+  }
+  
+  .closed {
+    width: 80px;
+  }
+  
+  .logo {
+    font-size: 22px;
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    padding-bottom: 20px;
+    color:  #ff9800;
+  }
+  
+  .menu {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    color: aliceblue;
+  }
+  
+  .menu li {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff9800, #ff5722);
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .menu li:hover {
+    background: linear-gradient(135deg, #ec8e00, #cf4319);
+    transform: scale(1.1);
+  }
+  
+  .menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon {
+    font-size: 26px;
+  }
+
+  .submenu {
+    position: absolute;
+    left: 120px;
+    top: 56%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .submenu li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s;
+    font-weight: bold;
+    color: #eaeaea;
+  }
+  
+.submenu li:nth-child(1) {
+    transform: translateX(-10px);
+}
+
+.submenu li:nth-child(2) {
+    transform: translateX(10px);
+}
+
+.submenu li:nth-child(3) {
+    transform: translateX(-10px);
+}
+
+.submenu li:hover {
+    background: linear-gradient(135deg, #ec8e00, #cf4319);
+    transform: scale(1.1);
+}
+
+.submenu li:nth-child(3) {
+    grid-column: span 2;
+    justify-self: center;
+}
+  
+  .submenu li:hover {
+    background: rgba(255, 152, 0, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 80px;
+    }
+  
+    .open {
+      width: 220px;
+    }
+  
+    .menu li span {
+      display: none;
+    }
+  
+    .open .menu li span {
+      display: block;
+    }
+    .submenu {
+        left: 90px;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .submenu li:nth-child(3) {
+        grid-column: auto;
+    }
+  }
+  

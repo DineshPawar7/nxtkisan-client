@@ -1,0 +1,57 @@
+.feedHeader {
+    width: 600px;
+    margin: auto;
+    background: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .nav-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  
+  .nav-tabs button {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .nav-tabs button:hover {
+    color: #007bff;
+  }
+  
+  .nav-tabs .active {
+    border-bottom: 2px solid #007bff;
+    color: #007bff;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header {
+      width: 100%;
+      font-size: 18px;
+    }
+  
+    .nav-tabs {
+      flex-wrap: wrap;
+    }
+  
+    .nav-tabs button {
+      font-size: 14px;
+      padding: 5px 8px;
+    }
+  }
+  
