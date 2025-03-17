@@ -1,0 +1,64 @@
+.ad-container {
+    width: 300px;
+    height: 100vh;
+    border-left: 2px solid #ddd;
+    text-align: center;
+    z-index: 1000;
+    position: fixed;
+    right: 15px;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px 10px;
+    overflow-y: auto;
+}
+
+.ad-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ad-container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+}
+
+.ad-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff4500;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ad-box {
+    width: 92%;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #444;
+    font-weight: bold;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.ad-box:hover {
+    transform: scale(1.08);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ad-box p {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #222;
+}
+
+.ad-box small {
+    font-size: 13px;
+    color: #666;
+}

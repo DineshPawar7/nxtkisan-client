@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaHome, FaRobot, FaTractor, FaPlusCircle, FaUser, FaCamera, FaVideo, FaFileAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import "./Sidebar.css";
 
 const Sidebar = ({ onCreate }) => {
@@ -8,27 +9,65 @@ const Sidebar = ({ onCreate }) => {
 
   return (
     <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-      <div className="logo" onClick={() => setIsOpen(!isOpen)}>NxtKisan</div>
+      <div className="logo" onClick={() => setIsOpen(!isOpen)}>
+        NxtKisan
+      </div>
+
+      {/* Sidebar Menu */}
       <ul className="menu">
-        <li><FaHome className="icon" /><span>Home</span></li>
-        <li><FaRobot className="icon" /><span>AI</span></li>
-        <li><FaTractor className="icon" /><span>Mandibhav</span></li>
+  <li>
+    <Link to="/">
+      <FaHome className="icon" />
+      {isOpen && <span>Home</span>}
+    </Link>
+  </li>
 
-        {/* Create Button */}
-        <li onClick={() => setShowSubMenu(!showSubMenu)} className="create-btn">
-          <FaPlusCircle className="icon" /><span>Create</span>
-        </li>
+  <li>
+    <Link to="/chatbot">
+      <FaRobot className="icon" />
+      {isOpen && <span>AI</span>}
+    </Link>
+  </li>
 
-        {showSubMenu && (
-          <ul className="submenu">
-            <li onClick={() => onCreate("photo")}><FaCamera className="icon" /></li>
-            <li onClick={() => onCreate("video")}><FaVideo className="icon" /></li>
-            <li onClick={() => onCreate("article")}><FaFileAlt className="icon" /></li>
-          </ul>
-        )}
+  <li>
+    <Link to="/mandibhav">
+      <FaTractor className="icon" />
+      {isOpen && <span>Mandibhav</span>}
+    </Link>
+  </li>
 
-        <li><FaUser className="icon" /><span>Profile</span></li>
-      </ul>
+  {/* Create Button */}
+  <li className="create-btn" onClick={() => setShowSubMenu(!showSubMenu)}>
+    <FaPlusCircle className="icon" />
+    {isOpen && <span>Create</span>}
+  </li>
+
+  {/* Submenu for Create Button */}
+  {showSubMenu && (
+    <ul className="submenu">
+      <li onClick={() => onCreate("photo")}>
+        <FaCamera className="icon" />
+        {isOpen && <span></span>}
+      </li>
+      <li onClick={() => onCreate("video")}>
+        <FaVideo className="icon" />
+        {isOpen && <span></span>}
+      </li>
+      <li onClick={() => onCreate("article")}>
+        <FaFileAlt className="icon" />
+        {isOpen && <span></span>}
+      </li>
+    </ul>
+  )}
+
+  <li>
+    <Link to="/profile">
+      <FaUser className="icon" />
+      {isOpen && <span>Profile</span>}
+    </Link>
+  </li>
+</ul>
+
     </div>
   );
 };
