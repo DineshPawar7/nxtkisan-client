@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./feedHeader.css";
+import "./FeedHeader.css";
 
 const Feedheader = () => {
   const [activeTab, setActiveTab] = useState("posts");
