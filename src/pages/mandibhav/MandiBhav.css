@@ -1,106 +1,100 @@
 .mandi-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-
-    
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
 }
 
 .mandi-box {
-    width: calc(100% - 700px);
-    max-width: 1000px;
-    border-radius: 8px;
-    padding: 20px;
-    border: 1px solid #ccc;
+  width: calc(100% - 700px);
+  max-width: 1000px;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #ccc;
 }
 
 .mandi-heading {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .loading-text {
-    text-align: center;
-    font-size: 16px;
-    color: #666;
+  text-align: center;
+  font-size: 16px;
+  color: #666;
 }
 
 .table-wrapper {
-    overflow-x: auto;
-    
+  overflow-x: auto;
 }
 
 .mandi-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    text-align: center;
-    background: white;
-    
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: center;
+  background: white;
 }
 
 .mandi-table thead {
-    background: #008080;
-    color: white;
-    font-weight: bold;
-    
+  background: #008080;
+  color: white;
+  font-weight: bold;
 }
 
-.mandi-table th, 
+.mandi-table th,
 .mandi-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
 }
 
 .mandi-table tbody tr:hover {
-    background: #f1f1f1;
-    transition: 0.3s;
+  background: #f1f1f1;
+  transition: 0.3s;
 }
 
 .min-price {
-    color: green;
-    font-weight: bold;
+  color: green;
+  font-weight: bold;
 }
 
 .max-price {
-    color: red;
-    font-weight: bold;
+  color: red;
+  font-weight: bold;
 }
 
 .avg-price {
-    color: blue;
-    font-weight: bold;
+  color: blue;
+  font-weight: bold;
 }
 
 /* No Data */
 .no-data {
-    text-align: center;
-    font-size: 16px;
-    color: #ff0000;
-    font-weight: bold;
-    padding: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #ff0000;
+  font-weight: bold;
+  padding: 20px;
 }
 
-
 .filter-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .filter-container select {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
 }
 
 .chart-container {
-    width: 100%;
-    height: 400px;
-    margin-bottom: 20px;
+  width: 100%;
+  height: 400px;
+  margin-bottom: 20px;
 }

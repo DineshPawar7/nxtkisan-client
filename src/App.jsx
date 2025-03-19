@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { db } from "./firebase"; // ✅ Firestore import kiya
+import { db } from "./firebase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import Sidebar from "./components/sidebar/Sidebar";
 import Profile from "./pages/profile/Profile";
@@ -38,10 +38,10 @@ function App() {
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <div>
       <Sidebar onCreate={handleCreate} />
 
-      <div style={{ flex: 1, padding: "20px" }}>
+      <div>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />

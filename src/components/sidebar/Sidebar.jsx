@@ -44,21 +44,22 @@ const Sidebar = ({ onCreate }) => {
 
   {/* Submenu for Create Button */}
   {showSubMenu && (
-    <ul className="submenu">
-      <li onClick={() => onCreate("photo")}>
-        <FaCamera className="icon" />
-        {isOpen && <span></span>}
-      </li>
-      <li onClick={() => onCreate("video")}>
-        <FaVideo className="icon" />
-        {isOpen && <span></span>}
-      </li>
-      <li onClick={() => onCreate("article")}>
-        <FaFileAlt className="icon" />
-        {isOpen && <span></span>}
-      </li>
-    </ul>
-  )}
+  <ul className="submenu">
+    <li onClick={() => onCreate("photo")}>
+      <FaCamera className="icon" />
+      {isOpen && <span>Photo</span>}
+    </li>
+    <li onClick={() => onCreate("video")}>
+      <FaVideo className="icon" />
+      {isOpen && <span>Video</span>}
+    </li>
+    <li onClick={() => onCreate("article")}>
+      <FaFileAlt className="icon" />
+      {isOpen && <span>Article</span>}
+    </li>
+  </ul>
+)}
+
 
   <li>
     <Link to="/profile">

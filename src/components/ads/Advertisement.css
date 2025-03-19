@@ -3,7 +3,6 @@
     height: 100vh;
     border-left: 2px solid #ddd;
     text-align: center;
-    z-index: 1000;
     position: fixed;
     right: 15px;
     top: 0;
@@ -11,7 +10,6 @@
     flex-direction: column;
     gap: 15px;
     padding: 20px 10px;
-    overflow-y: auto;
 }
 
 .ad-container::-webkit-scrollbar {
@@ -62,3 +60,19 @@
     font-size: 13px;
     color: #666;
 }
+
+@media (max-width: 1200px) {
+    .ad-container {
+        width: 200px;
+        height: 100vh;
+        
+    }
+
+}
+
+@media (max-width: 1000px) {
+    .ad-container {
+      display: none;
+    }
+  }
+  

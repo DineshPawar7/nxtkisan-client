@@ -1,69 +1,148 @@
 .feed-container {
-    max-width: 600px;
-    margin: auto;
+  max-width: 600px;
+  margin: auto;
+}
+
+/* Post Card */
+.post-card {
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+/* Post Header */
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+
+.post-article {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1d1d1f;
+  padding: 10px 0;
+  word-wrap: break-word;
+  white-space: pre-line;
+  font-family: Arial, sans-serif;
+}
+
+.post-article p {
+  margin: 0 0 10px;
+  padding: 5px 0;
+}
+.post-article a {
+  color: #1da1f2;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.post-article a:hover {
+  text-decoration: underline;
+}
+
+/* User Profile Image */
+.user-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Username & Location */
+.username {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.location {
+  font-size: 12px;
+  color: gray;
+  margin: 0;
+}
+
+/* Post Image */
+.post-img {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+/* Post Actions */
+.post-actions {
+  display: flex;
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #333;
+}
+
+.liked {
+  color: red;
+}
+
+.likes {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* Caption */
+.caption {
+  font-size: 14px;
+  color: #333;
+  padding-top: 5px;
+}
+@media (max-width: 1300px) {
+  .feed-container {
+    max-width: 500px;
     padding: 20px;
   }
-  
-  .post-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 15px;
-  }
-  
-  .post-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .user-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .post-img {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-  
-  .post-actions {
-    display: flex;
-    gap: 15px;
-    padding: 10px 0;
-  }
-  
-  .post-actions button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    color: #333;
+}
 
+@media (max-width: 1000px) {
+  .feed-container {
+    max-width: 600px;
+    padding: 10px;
+    margin-left: 25%;
   }
-  
-  .liked {
-    color: red;
+
+  .post-article {
+    font-size: 15px;
   }
-  
-  .likes {
-    font-weight: bold;
-    margin-top: 5px;
+}
+
+/* Responsive */
+@media (max-width: 827px) {
+  .feed-container {
+    width: 100%;
+    padding: 10px;
   }
-  
-  .caption {
-    color: #333;
+
+  .post-article {
+    font-size: 15px;
   }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .feed-container {
-      width: 100%;
-      padding: 10px;
-    }
+}
+
+@media (max-width: 550px) {
+  .feed-container {
+    max-width: 600px;
+    width: 600px;
+    padding: 10px;
   }
-  
+}
+
+@media (max-width: 400px) {
+  .feed-container {
+    width: 600px;
+    padding: 8px;
+  }
+}
