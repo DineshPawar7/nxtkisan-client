@@ -1,51 +1,89 @@
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase";
 import { useAuth } from "../../context/AuthContext";
 import "./Profile.css";
 
 const Profile = () => {
   const { user } = useAuth();
-  const [username, setUsername] = useState(user?.displayName || "User"); // Default to "User"
+  const [username, setUsername] = useState(user?.username || "User");
+  const [profilePic, setProfilePic] = useState(user?.profilePic || "https://via.placeholder.com/150");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    const getUsername = async (userId) => {
-      if (!userId) return;
+    const fetchUserProfile = async () => {
+      if (!user?._id) return;
 
       try {
-        console.log("🔍 Fetching username for userId:", userId);
-        const userDocRef = doc(db, "users", userId);
-        const userDoc = await getDoc(userDocRef);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`/api/users/${user._id}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        if (userDoc.exists()) {
-          console.log("Username found:", userDoc.data().username);
-          setUsername(userDoc.data().username);
+        const data = await res.json();
+        if (res.ok) {
+          setUsername(data.username);
+          setProfilePic(data.profilePic || "https://via.placeholder.com/150");
         } else {
-          console.warn("User not found in Firestore.");
+          console.error("❌ Error fetching user data:", data.message);
         }
       } catch (error) {
-        console.error("Firestore error:", error.message);
+        console.error("❌ Error fetching profile:", error.message);
       }
     };
 
-    if (user?.uid) {
-      console.log("👤 Profile Page: Fetching data for userId:", user.uid);
-      getUsername(user.uid);
-    }
+    fetchUserProfile();
   }, [user]);
+
+  // 🖼️ Upload Profile Picture
+  const handleProfileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("profilePic", file);
+
+      const res = await fetch(`/api/users/${user._id}/upload-profile`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to upload profile picture");
+      }
+
+      setProfilePic(data.profilePic);
+      console.log("✅ Profile picture updated successfully!");
+    } catch (error) {
+      console.error("🔥 Error uploading profile picture:", error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <img
-          src={user?.photoURL || "https://via.placeholder.com/150"}
-          alt="Profile"
-          className="profile-pic"
+        <label htmlFor="profile-upload">
+          <img src={profilePic} alt="Profile" className="profile-pic" />
+        </label>
+        <input 
+          type="file" 
+          id="profile-upload" 
+          style={{ display: "none" }} 
+          onChange={handleProfileUpload} 
+          accept="image/*"
         />
         <div className="profile-info">
           <h2 className="username">{username}</h2>
           <p className="full-name">{user?.email}</p>
           <p className="bio">Welcome to my profile!</p>
+          {uploading && <p>Uploading...</p>}
         </div>
       </div>
     </div>

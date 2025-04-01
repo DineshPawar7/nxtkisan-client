@@ -1,12 +1,4 @@
 import { useState, useEffect } from "react";
-import { db } from "../../firebase";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  doc,
-  getDoc,
-} from "firebase/firestore";
 import { useAuth } from "../../context/AuthContext";
 import "./CreatePost.css";
 
@@ -20,20 +12,21 @@ const CreatePost = ({ postType, onClose, onPostSubmit }) => {
 
   useEffect(() => {
     const fetchUsername = async () => {
-      if (user && user.uid) {
+      if (user) {
         try {
-          console.log("🔍 Fetching username for userId:", user.uid);
-          const userDocRef = doc(db, "users", user.uid);
-          const userDoc = await getDoc(userDocRef);
+          console.log("🔍 Fetching user data...");
+          const token = localStorage.getItem("token");
 
-          if (userDoc.exists()) {
-            console.log("✅ Firestore User Data:", userDoc.data());
-            setUsername(userDoc.data().username);
+          const res = await fetch(`/api/users/${user._id}`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            setUsername(data.username);
           } else {
-            console.error(
-              "❌ No username found in Firestore for userId:",
-              user.uid
-            );
+            console.error("❌ Error fetching user data:", data.message);
             setUsername("Unknown User");
           }
         } catch (error) {
@@ -49,7 +42,7 @@ const CreatePost = ({ postType, onClose, onPostSubmit }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!user || !user.uid) {
+    if (!user) {
       alert("You must be logged in to post!");
       return;
     }
@@ -58,29 +51,41 @@ const CreatePost = ({ postType, onClose, onPostSubmit }) => {
 
     try {
       const newPost = {
-        userId: String(user.uid),
+        userId: user._id,
         username: username || "Unknown User",
-        userImage:
-          user.photoURL ||
-          "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        userImage: user.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
         caption,
         tags: tags.split(",").map((tag) => tag.trim()),
         type: postType,
         article: postType === "article" ? articleText : "",
-        timestamp: serverTimestamp(),
       };
 
-      const docRef = await addDoc(collection(db, "posts"), newPost);
-      console.log("✅ Post saved with ID:", docRef.id);
+      const token = localStorage.getItem("token");
 
-      onPostSubmit && onPostSubmit(newPost);
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newPost),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Error uploading post");
+      }
+
+      console.log("✅ Post saved:", data);
+      onPostSubmit && onPostSubmit(data);
       setCaption("");
       setTags("");
       setArticleText("");
       onClose();
     } catch (error) {
       console.error("❌ Error uploading post:", error);
-      alert("Error uploading post");
+      alert(error.message);
     }
 
     setLoading(false);

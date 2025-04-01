@@ -1,52 +1,30 @@
 import { useEffect, useState } from "react";
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy,
-  getDoc,
-  doc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
+import axios from "axios";
 import "./Feed.css";
 
 const Feed = () => {
   const [posts, setPosts] = useState([]);
   const [usernames, setUsernames] = useState({});
 
-  useEffect(() => {
-    const postsQuery = query(
-      collection(db, "posts"),
-      orderBy("timestamp", "desc")
-    );
-
-    const unsubscribe = onSnapshot(postsQuery, async (snapshot) => {
-      const postsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setPosts(postsData);
-      fetchUsernames(postsData);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  const fetchPosts = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/posts");
+      setPosts(res.data);
+      fetchUsernames(res.data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
 
   const fetchUsernames = async (postsData) => {
     const usernameMap = { ...usernames };
-
     const fetchPromises = postsData.map(async (post) => {
       if (!usernameMap[post.userId]) {
         try {
-          const userDoc = await getDoc(doc(db, "users", post.userId));
-          if (userDoc.exists()) {
-            usernameMap[post.userId] = userDoc.data().username;
-          } else {
-            usernameMap[post.userId] = "Unknown User";
-          }
+          const res = await axios.get(`http://localhost:5000/api/users/${post.userId}`);
+          usernameMap[post.userId] = res.data.username || "Unknown User";
         } catch (error) {
-          console.error("❌ Error fetching username:", error);
+          console.error("Error fetching username:", error);
           usernameMap[post.userId] = "Unknown User";
         }
       }
@@ -56,28 +34,26 @@ const Feed = () => {
     setUsernames(usernameMap);
   };
 
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   return (
     <div className="feed-container">
       {posts.length === 0 ? <p>No posts yet.</p> : null}
 
       {posts.map((post) => (
-        <div key={post.id} className="post-card">
+        <div key={post._id} className="post-card">
           <div className="post-header">
             <img
-              src={
-                post.userImage
-                  ? post.userImage
-                  : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-              }
+              src={post.userImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
               alt="Profile"
               className="user-img"
             />
 
             <div>
               <h4 className="username">
-                {usernames[post.userId]
-                  ? usernames[post.userId]
-                  : "Unknown User"}
+                {usernames[post.userId] || "Unknown User"}
               </h4>
             </div>
           </div>
@@ -85,6 +61,19 @@ const Feed = () => {
           {post.type === "article" && post.article && (
             <div className="post-article">
               <p>{post.article}</p>
+            </div>
+          )}
+
+          {(post.type === "photo" || post.type === "video") && post.mediaUrl && (
+            <div className="post-media">
+              {post.type === "photo" ? (
+                <img src={post.mediaUrl} alt="Post" className="post-image" />
+              ) : (
+                <video controls className="post-video">
+                  <source src={post.mediaUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              )}
             </div>
           )}
 

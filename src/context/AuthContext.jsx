@@ -1,13 +1,4 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { auth, db } from "../firebase";
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged, 
-  updateProfile 
-} from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -17,54 +8,76 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const createUserInFirestore = async (user) => {
-    if (!user) return;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-    const userDocRef = doc(db, "users", user.uid);
-    const userSnapshot = await getDoc(userDocRef);
-
-    if (!userSnapshot.exists()) {
-      await setDoc(userDocRef, {
-        username: user.displayName || "Anonymous",
-        email: user.email,
-        photoURL: user.photoURL || "",
-      });
-      console.log(`✅ Firestore user created: ${user.uid}`);
+    if (token) {
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/me`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user) {
+            setUser(data.user);
+          }
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
     } else {
-      console.log(`✅ User already exists in Firestore: ${user.uid}`);
+      setLoading(false);
+    }
+  }, []);
+
+  const signup = async (name, email, password) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Signup failed");
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        setUser(data.user);
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Signup Error:", error.message);
+      return { error: error.message };
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-
-      if (currentUser) {
-        await createUserInFirestore(currentUser);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const signup = async (email, password, username) => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    await updateProfile(user, { displayName: username });
-
-    await createUserInFirestore(user);
-
-    return user;
-  };
-
   const login = async (email, password) => {
-    return await signInWithEmailAndPassword(auth, email, password);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        setUser(data.user);
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Login Error:", error.message);
+      return { error: error.message };
+    }
   };
 
-  const logout = async () => {
-    return await signOut(auth);
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
   };
 
   return (

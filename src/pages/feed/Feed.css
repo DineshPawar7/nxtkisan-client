@@ -3,7 +3,6 @@
   margin: auto;
 }
 
-/* Post Card */
 .post-card {
   padding: 15px;
   border-radius: 12px;
@@ -11,7 +10,6 @@
   background: white;
 }
 
-/* Post Header */
 .post-header {
   display: flex;
   align-items: center;
@@ -43,7 +41,6 @@
   text-decoration: underline;
 }
 
-/* User Profile Image */
 .user-img {
   width: 50px;
   height: 50px;
@@ -51,7 +48,6 @@
   object-fit: cover;
 }
 
-/* Username & Location */
 .username {
   font-size: 16px;
   font-weight: bold;
@@ -64,14 +60,12 @@
   margin: 0;
 }
 
-/* Post Image */
 .post-img {
   width: 100%;
   border-radius: 10px;
   margin-top: 10px;
 }
 
-/* Post Actions */
 .post-actions {
   display: flex;
   gap: 15px;
@@ -95,7 +89,6 @@
   margin-top: 5px;
 }
 
-/* Caption */
 .caption {
   font-size: 14px;
   color: #333;
@@ -120,7 +113,6 @@
   }
 }
 
-/* Responsive */
 @media (max-width: 827px) {
   .feed-container {
     width: 100%;
