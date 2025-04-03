@@ -1,34 +1,62 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleRegister = async () => {
+        setLoading(true);
         try {
-            await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
-            alert("Registration successful!");
-            navigate('/login');
+            const response = await fetch("https://nxtkisan-server.onrender.com/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            const data = await response.json();
+            alert(data.message);
+
+            if (response.ok) {
+                window.location.href = "/login";
+            }
         } catch (error) {
-            alert(error.response.data.message);
+            alert("Registration failed. Please try again.");
         }
+        setLoading(false);
     };
 
     return (
         <div className="auth-wrapper">
             <div className="auth-container">
                 <h2>Register</h2>
-                <form onSubmit={handleSubmit}>
-                    <input type="text" placeholder="Name" onChange={(e) => setName(e.target.value)} required />
-                    <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-                    <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
-                    <button type="submit">Register</button>
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <input 
+                        type="text" 
+                        placeholder="Name" 
+                        value={name} 
+                        onChange={(e) => setName(e.target.value)} 
+                        required 
+                    />
+                    <input 
+                        type="email" 
+                        placeholder="Email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                    />
+                    <input 
+                        type="password" 
+                        placeholder="Password" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        required 
+                    />
+                    <button type="button" onClick={handleRegister} disabled={loading}>
+                        {loading ? "Registering..." : "Register"}
+                    </button>
                 </form>
             </div>
         </div>

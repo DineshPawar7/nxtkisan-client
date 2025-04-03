@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
 import "./CreatePost.css";
 
 const CreatePost = ({ postType, onClose, onPostSubmit }) => {
@@ -7,88 +6,33 @@ const CreatePost = ({ postType, onClose, onPostSubmit }) => {
   const [tags, setTags] = useState("");
   const [articleText, setArticleText] = useState("");
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
-  const [username, setUsername] = useState("");
+  const username = "Guest User";
 
-  useEffect(() => {
-    const fetchUsername = async () => {
-      if (user) {
-        try {
-          console.log("🔍 Fetching user data...");
-          const token = localStorage.getItem("token");
-
-          const res = await fetch(`/api/users/${user._id}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-          });
-
-          const data = await res.json();
-          if (res.ok) {
-            setUsername(data.username);
-          } else {
-            console.error("❌ Error fetching user data:", data.message);
-            setUsername("Unknown User");
-          }
-        } catch (error) {
-          console.error("❌ Error fetching username:", error);
-          setUsername("Unknown User");
-        }
-      }
-    };
-
-    fetchUsername();
-  }, [user]);
-
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-
-    if (!user) {
-      alert("You must be logged in to post!");
-      return;
-    }
-
+    
     setLoading(true);
 
-    try {
+    setTimeout(() => {
       const newPost = {
-        userId: user._id,
-        username: username || "Unknown User",
-        userImage: user.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        id: Date.now(),
+        username,
         caption,
-        tags: tags.split(",").map((tag) => tag.trim()),
         type: postType,
-        article: postType === "article" ? articleText : "",
+        article: postType === "article" ? articleText : null,
+        tags: tags.split(",").map((tag) => tag.trim()),
       };
 
-      const token = localStorage.getItem("token");
+      console.log("Mock Post Created:", newPost);
+      alert("Post created (Frontend only, no backend)");
 
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newPost),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Error uploading post");
-      }
-
-      console.log("✅ Post saved:", data);
-      onPostSubmit && onPostSubmit(data);
+      onPostSubmit && onPostSubmit(newPost);
       setCaption("");
       setTags("");
       setArticleText("");
+      setLoading(false);
       onClose();
-    } catch (error) {
-      console.error("❌ Error uploading post:", error);
-      alert(error.message);
-    }
-
-    setLoading(false);
+    }, 1000);
   };
 
   return (
@@ -100,9 +44,7 @@ const CreatePost = ({ postType, onClose, onPostSubmit }) => {
         </button>
 
         {postType === "photo" || postType === "video" ? (
-          <p className="coming-soon">
-            📢 Coming Soon: This feature is under development.
-          </p>
+          <p className="coming-soon">📢 Coming Soon: This feature is under development.</p>
         ) : (
           <>
             {postType === "article" && (

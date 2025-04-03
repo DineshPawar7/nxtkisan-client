@@ -1,36 +1,62 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './Auth.css';
+import React, { useState } from "react";
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-            localStorage.setItem("token", res.data.token);
-            navigate('/');
-        } catch (error) {
-            alert(error.response.data.message);
-        }
-    };
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      // const response = await fetch("http://localhost:5000/api/auth/login", {
+        const response = await fetch("https://nxtkisan-server.onrender.com/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    return (
-        <div className="auth-wrapper">
-            <div className="auth-container">
-                <h2>Login</h2>
-                <form onSubmit={handleSubmit}>
-                    <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-                    <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
-                    <button type="submit">Login</button>
-                </form>
-            </div>
-        </div>
-    );
+      const data = await response.json();
+      
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        alert("Login Successful");
+        window.location.href = "/profile"; // Redirect to profile
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      alert("Login failed. Please try again.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="auth-wrapper">
+      <div className="auth-container">
+        <h2>Login</h2>
+        <form onSubmit={(e) => e.preventDefault()}>
+          <input
+            type="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Enter password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="button" onClick={handleLogin} disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

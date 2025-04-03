@@ -1,69 +1,46 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useState, useEffect } from "react";
 import "./Profile.css";
 
 const Profile = () => {
-  const { user } = useAuth();
-  const [username, setUsername] = useState(user?.username || "User");
-  const [profilePic, setProfilePic] = useState(user?.profilePic || "https://via.placeholder.com/150");
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+
+  const [username, setUsername] = useState(storedUser.name || "Guest User");
+  const [email, setEmail] = useState(storedUser.email || "guest@example.com");
+  const [profilePic, setProfilePic] = useState(
+    storedUser.profilePic || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+  );
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user?._id) return;
+    const updatedUser = JSON.parse(localStorage.getItem("user")) || {};
+    setUsername(updatedUser.name || "Guest User");
+    setEmail(updatedUser.email || "guest@example.com");
+    setProfilePic(updatedUser.profilePic || "https://cdn-icons-png.flaticon.com/512/149/149071.png");
+  }, []);
 
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`/api/users/${user._id}`, {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-          setUsername(data.username);
-          setProfilePic(data.profilePic || "https://via.placeholder.com/150");
-        } else {
-          console.error("❌ Error fetching user data:", data.message);
-        }
-      } catch (error) {
-        console.error("❌ Error fetching profile:", error.message);
-      }
-    };
-
-    fetchUserProfile();
-  }, [user]);
-
-  // 🖼️ Upload Profile Picture
-  const handleProfileUpload = async (e) => {
+  // Profile Upload Function
+  const handleProfileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setUploading(true);
 
-    try {
-      const token = localStorage.getItem("token");
-      const formData = new FormData();
-      formData.append("profilePic", file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const updatedUser = { ...storedUser, profilePic: reader.result };
 
-      const res = await fetch(`/api/users/${user._id}/upload-profile`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
+      // Save in LocalStorage
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to upload profile picture");
-      }
+      // Update State
+      setProfilePic(reader.result);
 
-      setProfilePic(data.profilePic);
-      console.log("✅ Profile picture updated successfully!");
-    } catch (error) {
-      console.error("🔥 Error uploading profile picture:", error.message);
-    } finally {
+      // Dispatch Event for Feed Update
+      window.dispatchEvent(new Event("profilePicUpdated"));
+
       setUploading(false);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -72,16 +49,16 @@ const Profile = () => {
         <label htmlFor="profile-upload">
           <img src={profilePic} alt="Profile" className="profile-pic" />
         </label>
-        <input 
-          type="file" 
-          id="profile-upload" 
-          style={{ display: "none" }} 
-          onChange={handleProfileUpload} 
+        <input
+          type="file"
+          id="profile-upload"
+          style={{ display: "none" }}
+          onChange={handleProfileUpload}
           accept="image/*"
         />
         <div className="profile-info">
           <h2 className="username">{username}</h2>
-          <p className="full-name">{user?.email}</p>
+          <p className="full-name">{email}</p>
           <p className="bio">Welcome to my profile!</p>
           {uploading && <p>Uploading...</p>}
         </div>
